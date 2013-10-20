@@ -13,8 +13,8 @@ describe "Static pages" do
 
   describe "Home page" do
     before { visit root_path }
-    let(:heading)     { 'Sample App' }
-    let(:page_title)  { '' }
+    let(:heading) { 'Sample App' }
+    let(:page_title) { '' }
 
     it_should_behave_like "all static pages"
     it { should_not have_title('| Home') }
@@ -33,29 +33,41 @@ describe "Static pages" do
           expect(page).to have_selector("li##{item.id}", text: item.content)
         end
       end
+
+      it "should pluralize post numbers" do
+        expect(page).to have_content("2 microposts")
+        click_link("delete", match: :first)
+        expect(page).to have_content("1 micropost")
+      end
+    
+      it "should have pagination" do
+        50.times { FactoryGirl.create(:micropost, user: user, content: "Lorem") }
+        visit root_path
+        expect(page).to have_selector('div.pagination')
+      end
     end
   end
 
   describe "Help page" do
     before { visit help_path }
-    let(:heading)     { 'Help' }
-    let(:page_title)  { 'Help' }
+    let(:heading) { 'Help' }
+    let(:page_title) { 'Help' }
 
     it_should_behave_like "all static pages"
   end
 
   describe "About page" do
     before { visit about_path }
-    let(:heading)     { 'About Us' }
-    let(:page_title)  { 'About Us' }
+    let(:heading) { 'About Us' }
+    let(:page_title) { 'About Us' }
 
     it_should_behave_like "all static pages"
   end
 
   describe "Contact page" do
     before { visit contact_path }
-    let(:heading)     { 'Contact' }
-    let(:page_title)  { 'Contact' }
+    let(:heading) { 'Contact' }
+    let(:page_title) { 'Contact' }
 
     it_should_behave_like "all static pages"
   end
@@ -74,5 +86,5 @@ describe "Static pages" do
     expect(page).to have_title(full_title('Sign up'))
     click_link "sample app"
     expect(page).to have_title(full_title(''))
-  end  
+  end
 end
