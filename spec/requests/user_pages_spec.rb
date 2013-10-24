@@ -62,6 +62,7 @@ describe "UserPages" do
 
   describe "profile page" do
     let(:user) { FactoryGirl.create(:user) }
+    let(:other_user) { FactoryGirl.create(:user) }
     let!(:m1) { FactoryGirl.create(:micropost, user: user, content: "Foo") }
     let!(:m2) { FactoryGirl.create(:micropost, user: user, content: "Bar") }
 
@@ -78,7 +79,6 @@ describe "UserPages" do
     end
 
     describe "follow/unfollow buttons" do
-      let(:other_user) { FactoryGirl.create(:user) }
       before { sign_in user }
 
       describe "following a user" do
@@ -126,6 +126,16 @@ describe "UserPages" do
         end
       end
     end    
+
+    describe "follower/following counts" do
+      before do
+        other_user.follow!(user)
+        visit user_path(user)
+      end
+
+      it { should have_link("0 following", href: following_user_path(user)) }
+      it { should have_link("1 followers", href: followers_user_path(user)) }
+    end
   end
 
   describe "signup page" do
